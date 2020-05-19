@@ -32,7 +32,7 @@ class Team
 	/**
 	 * @ORM\ManyToMany(targetEntity="Game", mappedBy="teams")
 	 */
-	private $matches;
+	private $games;
 
 	/**
 	 * @ORM\Column(type="datetime")
@@ -48,7 +48,7 @@ class Team
 	{
 		$this->created = new DateTime("now");
 		$this->players = new ArrayCollection();
-		$this->matches = new ArrayCollection();
+		$this->games = new ArrayCollection();
 	}
 
 	public function getId () : int
@@ -77,14 +77,14 @@ class Team
 		$this->getPlayers()->add($player);
 	}
 
-	public function getMatches () : ArrayCollection
+	public function getGames () : ArrayCollection
 	{
-		return $this->matches;
+		return $this->games;
 	}
 
-	public function addMatch (Game $match)
+	public function addGame (Game $game)
 	{
-		$this->getMatches()->add($match);
+		$this->getGames()->add($game);
 	}
 
 	public function getCreated () : DateTime
