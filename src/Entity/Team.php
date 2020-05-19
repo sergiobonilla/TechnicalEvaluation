@@ -30,7 +30,7 @@ class Team
 	private $players;
 
 	/**
-	 * @ORM\ManyToMany(targetEntity="Match", mappedBy="teams")
+	 * @ORM\ManyToMany(targetEntity="Game", mappedBy="teams")
 	 */
 	private $matches;
 
@@ -82,7 +82,7 @@ class Team
 		return $this->matches;
 	}
 
-	public function addMatch (Match $match)
+	public function addMatch (Game $match)
 	{
 		$this->getMatches()->add($match);
 	}
