@@ -67,7 +67,7 @@ class Team
 		return $this;
 	}
 
-	public function getPlayers () : ArrayCollection
+	public function getPlayers ()
 	{
 		return $this->players;
 	}
@@ -77,7 +77,7 @@ class Team
 		$this->getPlayers()->add($player);
 	}
 
-	public function getGames () : ArrayCollection
+	public function getGames ()
 	{
 		return $this->games;
 	}

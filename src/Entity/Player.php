@@ -73,7 +73,7 @@ class Player
 		return $this;
 	}
 
-	public function getGoals () : ArrayCollection
+	public function getGoals ()
 	{
 		 return $this->goals;
 	}
@@ -83,7 +83,7 @@ class Player
 		$this->getGoals()->add($goal);
 	}
 
-	public function getPenalties () : ArrayCollection
+	public function getPenalties ()
 	{
 		return $this->penalties;
 	}

@@ -29,7 +29,7 @@ class Game
 	private $beginning;
 
 	/**
-	 * @ORM\Column(type="string", length=100)
+	 * @ORM\Column(type="string", length=100, nullable=true)
 	 */
 	private $result;
 
@@ -88,13 +88,13 @@ class Game
 		return $this->result;
 	}
 
-	public function setResult (string $result) : Game
+	public function setResult ($result) : Game
 	{
 		$this->result = $result;
 		return $this;
 	}
 
-	public function getTeams () : ArrayCollection
+	public function getTeams ()
 	{
 		return $this->teams;
 	}
