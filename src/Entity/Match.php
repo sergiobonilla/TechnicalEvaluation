@@ -35,7 +35,9 @@ class Match
 	private $result;
 
 	/**
-	 * @ORM\OneToMany(targetEntity="Team", mappedBy="match", cascade={"remove"})
+	 * @ORM\ManyToMany(targetEntity="Team", inversedBy="matches")
+	 * @ORM\JoinTable(name="match_teams")
+	 *
 	 */
 	private $teams;
 
