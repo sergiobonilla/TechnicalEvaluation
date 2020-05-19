@@ -30,6 +30,11 @@ class Match
 	private $beginning;
 
 	/**
+	 * @ORM\Column(type="string")
+	 */
+	private $result;
+
+	/**
 	 * @ORM\OneToMany(targetEntity="Team", mappedBy="match", cascade={"remove"})
 	 */
 	private $teams;
@@ -74,6 +79,17 @@ class Match
 	public function setBeginning (DateTime $beginning) : Match
 	{
 		$this->beginning = $beginning;
+		return $this;
+	}
+
+	public function getResult () : string
+	{
+		return $this->result;
+	}
+
+	public function setResult (string $result) : Match
+	{
+		$this->result = $result;
 		return $this;
 	}
 

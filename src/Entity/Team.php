@@ -20,6 +20,11 @@ class Team
 	private $id;
 
 	/**
+	 * @ORM\Column(type="string", length=100, unique=false)
+	 */
+	private $name;
+
+	/**
 	 * @ORM\OneToMany(targetEntity="Player", mappedBy="team", cascade={"remove"})
 	 */
 	private $players;
@@ -49,6 +54,17 @@ class Team
 	public function getId () : int
 	{
 		return $this->id;
+	}
+
+	public function getName () : string
+	{
+		return $this->name;
+	}
+
+	public function setName (string  $name) : Team
+	{
+		$this->name = $name;
+		return $this;
 	}
 
 	public function getPlayers () : ArrayCollection
