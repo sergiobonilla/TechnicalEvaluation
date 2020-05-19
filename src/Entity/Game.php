@@ -29,7 +29,7 @@ class Game
 	private $beginning;
 
 	/**
-	 * @ORM\Column(type="string")
+	 * @ORM\Column(type="string", length=100)
 	 */
 	private $result;
 
