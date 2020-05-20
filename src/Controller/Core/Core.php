@@ -38,11 +38,6 @@ class Core extends AbstractController
 		return $team;
 	}
 
-	protected function persist ($entity) {
-		$this->em->persist($entity);
-		$this->em->flush();
-	}
-
 	protected function processJsonGame ($json) : array
 	{
 		$teams    = array();
@@ -71,7 +66,7 @@ class Core extends AbstractController
 			array_push($teams, $this->createOrGetTeam($key));
 		}
 
-		$game = $this->getGame($location, $result, $date, $teams);
+		$game = $this->getGame($location, $date, $teams);
 
 		if (empty($game)) {
 			// Let's create the game because it has been not found
@@ -87,20 +82,19 @@ class Core extends AbstractController
 				$this->persist($team);
 				$this->persist($game);
 			}
-		} else {
-			$game->setLocation($location);
-			$game->setBeginning($date);
-			$game->setResult($result);
-			$this->persist($game);
-
-			foreach ($teams as $team) {
-				$team->addGame($game);
-				$game->addTeam($team);
-				$this->persist($team);
-				$this->persist($game);
-			}
 		}
 
 		return array(true, 'Json parsed and data registered', $location, $result, $date, $teams);
+	}
+
+
+	private function persist ($entity) {
+		$this->em->persist($entity);
+		$this->em->flush();
+	}
+
+	private function remove ($entity) {
+		$this->em->remove($entity);
+		$this->em->flush();
 	}
 }
