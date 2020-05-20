@@ -21,6 +21,7 @@ class Core extends AbstractController
 		$this->em = $em;
 	}
 
+	/* ------------------- REPOS ACCESS ---------------------- */
 	public function findGameStrict (string $location, $result, DateTime $date, array $teams) {
 		return $this->em->getRepository(Game::class)->findStrict($location, $result, $date, $teams);
 	}
@@ -37,6 +38,15 @@ class Core extends AbstractController
 		return $this->em->getRepository(Team::class)->findByName($name);
 	}
 
+	public function findGoalStrict (int $moment, Player $player, Game $game) {
+		return $this->em->getRepository(Goal::class)->findStrict($moment, $player, $game);
+	}
+
+	public function findPenaltyStrict (int $moment, int $type, Player $player, Game $game) {
+		return $this->em->getRepository(Penalty::class)->findStrict($moment, $type, $player, $game);
+	}
+	/* -------------------------------------------------------- */
+
 	protected function createOrGetTeam ($name) {
 		$team = $this->findTeamByName($name);
 
@@ -51,11 +61,13 @@ class Core extends AbstractController
 
 	protected function processJsonGame ($json) : array
 	{
+		// Variables initialization
 		$players  = array();
 		$teams    = array();
 		$location = $json['location'];
 		$result   = (empty($json['result']) ? null : $json['result']);
 
+		// Data validation
 		try {
 			$date = new DateTime(date("Y-m-d H:i:s", strtotime($json['date'])));
 		} catch (Exception $e) {
@@ -138,29 +150,33 @@ class Core extends AbstractController
 			foreach ($goals as $goalData) {
 				$moment = intval($goalData['moment']);
 
-				$goal = new Goal();
-				$goal->setMoment($moment);
-				$goal->setPlayer($player);
-				$goal->setGame($game);
+				if (!$goal = $this->findGoalStrict($moment, $player, $game)) {
+					$goal = new Goal();
+					$goal->setMoment($moment);
+					$goal->setPlayer($player);
+					$goal->setGame($game);
 
-				$this->persist($goal);
-				$this->persist($player);
-				$this->persist($game);
+					$this->persist($goal);
+					$this->persist($player);
+					$this->persist($game);
+				}
 			}
 
 			foreach ($penalties as $penaltyData) {
 				$moment = intval($penaltyData['moment']);
 				$type   = intval($penaltyData['type']);
 
-				$penalty = new Penalty();
-				$penalty->setMoment($moment);
-				$penalty->setType($type);
-				$penalty->setPlayer($player);
-				$penalty->setGame($game);
+				if (!$penalty = $this->findPenaltyStrict($moment, $type, $player, $game)) {
+					$penalty = new Penalty();
+					$penalty->setMoment($moment);
+					$penalty->setType($type);
+					$penalty->setPlayer($player);
+					$penalty->setGame($game);
 
-				$this->persist($penalty);
-				$this->persist($player);
-				$this->persist($game);
+					$this->persist($penalty);
+					$this->persist($player);
+					$this->persist($game);
+				}
 			}
 		}
 	}

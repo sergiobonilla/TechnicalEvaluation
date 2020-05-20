@@ -16,7 +16,7 @@ class ServiceController extends Core
 		 * request, but for dev purpose I will not do
 		 */
 		$data = $request->request->get('data', '');
-
+		
 		if (empty($data))
 			return new JsonResponse(array('message' => 'Empty data'), Response::HTTP_BAD_REQUEST);
 
