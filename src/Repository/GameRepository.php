@@ -15,21 +15,43 @@ class GameRepository extends ServiceEntityRepository
 		parent::__construct($registry, Game::class);
 	}
 
-	public function findByExact (string $location, DateTime $date, array $teams)
+	public function findGame (string $location, DateTime $date)
 	{
-		if (count($teams) != 2)
-			return null;
-
 		try {
 			return $this->createQueryBuilder('g')
 				->join('g.teams', 'teams')
 				->where('g.beginning = :beginning')
 				->andWhere('g.location = :location')
-				->andWhere('teams.name = :name1 OR teams.name = :name2 OR teams.name = :name2 OR teams.name = :name1')
 				->setParameter('beginning', $date)
 				->setParameter('location', $location)
-				->setParameter('name1', $teams[0]->getName())
-				->setParameter('name2', $teams[1]->getName())
+				->getQuery()
+				->getOneOrNullResult();
+		} catch (NonUniqueResultException $e) {
+			return null;
+		}
+	}
+
+	public function findStrict (string $location, $result, DateTime $date, array $teams)
+	{
+		try {
+			$query = $this->createQueryBuilder('g')
+				->join('g.teams', 'teams')
+				->join('g.teams', 'teams1')
+				->where('g.beginning = :beginning')
+				->andWhere('g.location = :location');
+
+			if (empty($result))
+				$query->andWhere('g.result IS NULL');
+			else {
+				$query->andWhere('g.result = :result')
+					->setParameter('result', $result);
+			}
+
+			return $query->andWhere('teams.id = :id1 AND teams1.id = :id2 OR teams1.id = :id1 AND teams.id = :id2')
+				->setParameter('beginning', $date)
+				->setParameter('location', $location)
+				->setParameter('id1', $teams[0]->getId())
+				->setParameter('id2', $teams[1]->getId())
 				->getQuery()
 				->getOneOrNullResult();
 		} catch (NonUniqueResultException $e) {
