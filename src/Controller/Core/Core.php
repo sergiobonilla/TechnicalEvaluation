@@ -163,6 +163,9 @@ class Core extends AbstractController
 					$this->persist($goal);
 					$this->persist($player);
 					$this->persist($game);
+
+					// Here the sms needs to be send
+					$sms = '{"endpoints": "", "numer": "", "content": ""}';
 				}
 			}
 
