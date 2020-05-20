@@ -41,6 +41,11 @@ class Game
 	private $teams;
 
 	/**
+	 * @ORM\OneToMany(targetEntity="Goal", mappedBy="game", cascade={"remove"})
+	 */
+	private $goals;
+
+	/**
 	 * @ORM\Column(type="datetime")
 	 */
 	private $created;
@@ -54,6 +59,7 @@ class Game
 	{
 		$this->created = new DateTime("now");
 		$this->teams   = new ArrayCollection();
+		$this->goals   = new ArrayCollection();
 	}
 
 	public function getId () : int
@@ -102,6 +108,16 @@ class Game
 	public function addTeam (Team $team)
 	{
 		$this->getTeams()->add($team);
+	}
+
+	public function getGoals ()
+	{
+		return $this->goals;
+	}
+
+	public function addGoal (Goal $goal)
+	{
+		$this->getGoals()->add($goal);
 	}
 
 	public function getCreated () : DateTime
