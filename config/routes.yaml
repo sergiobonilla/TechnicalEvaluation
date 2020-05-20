@@ -1,3 +1,7 @@
 index:
     path: /
     controller: App\Controller\ViewController::index
+
+push_data:
+    path: /push-data
+    controller: App\Controller\ServiceController::pushData

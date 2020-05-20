@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
-class ViewController extends ParentController
+use App\Controller\Core\Core;
+
+class ViewController extends Core
 {
 	public function index ()
 	{
