@@ -8,6 +8,8 @@ class ViewController extends Core
 {
 	public function index ()
 	{
-		return $this->render('index/index.html.twig');
+		$games = $this->findAllGames();
+
+		return $this->render('index/index.html.twig', array('games' => $games));
 	}
 }

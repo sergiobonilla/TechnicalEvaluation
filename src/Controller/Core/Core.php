@@ -26,6 +26,10 @@ class Core extends AbstractController
 		return $this->em->getRepository(Game::class)->findStrict($location, $result, $date, $teams);
 	}
 
+	public function findAllGames () {
+		return $this->em->getRepository(Game::class)->findAll();
+	}
+
 	public function findGame (string $location, DateTime $date) {
 		return $this->em->getRepository(Game::class)->findGame($location, $date);
 	}

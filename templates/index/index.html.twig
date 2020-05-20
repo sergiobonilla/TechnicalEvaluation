@@ -24,7 +24,7 @@
                 <form>
                     <div class="form-group">
                         <label for="json">{% trans %}formed_club_json{% endtrans %}</label>
-                        <textarea class="form-control" id="json" rows="3">{"club": {"0": {"location": "Santiago Bernabeu", "date": "2020-3-10T18:30:55", "result": "", "teams":{"Real Madrid": {}, "Barcelona": {}}}, "1": {"location": "Sanchez Pijuán", "date": "2019-3-13T18:30:55", "result": "2|2", "teams":{"Sevilla": {}, "Betis": {}}}}}</textarea>
+                        <textarea class="form-control" id="json" rows="3">{"data": {"0": {"location": "Santiago Bernabeu", "date": "2020-3-10T18:30:55", "result": "", "teams":{"Real Madrid": {}, "Barcelona": {}}}, "1": {"location": "Sanchez Pijuán", "date": "2019-3-13T18:30:55", "result": "2|2", "teams":{"Sevilla": {}, "Betis": {}}}}}</textarea>
                     </div>
                     <button id="sendData" type="button" class="btn btn-primary mb-2">{% trans %}send_data{% endtrans %}</button>
                 </form>
@@ -33,7 +33,7 @@
                 <form>
                     <div class="form-group">
                         <label for="jsonMatch">{% trans %}formed_match_json{% endtrans %}</label>
-                        <textarea class="form-control" id="jsonMatch" rows="3"></textarea>
+                        <textarea class="form-control" id="jsonMatch" rows="3">{"data": {"0": {"location": "Santiago Bernabeu", "date": "2020-3-10T18:30:55", "result": "", "teams":{"Real Madrid": {"players": [{"name": "Sergio Ramos", "goals": [{"moment": "14"}], "penalty": [{"moment": "58", "type": "0"}]}, {"name": "Karim Benzema", "goals": [], "penalty": [{"moment": "8", "type": "1"}]}]}, "Barcelona": {"players": [{"name": "Lionel Messi", "goals": [{"moment": "58"}], "penalty": [{"moment": "8", "type": "0"}]}, {"name": "Luis Suárez", "goals": [], "penalty": [{"moment": "87", "type": "1"}]}]}}}}}</textarea>
                     </div>
                     <button id="sendDataMatch" type="button" class="btn btn-primary mb-2">{% trans %}send_data{% endtrans %}</button>
                 </form>
@@ -45,9 +45,39 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container mt-5">
         <div class="row">
-            <h1></h1>
+            <h1>{% trans %}matches{% endtrans %}</h1>
+        </div>
+        <div class="row">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">{% trans %}status{% endtrans %}</th>
+                    <th scope="col">{% trans %}goals{% endtrans %}</th>
+                    <th scope="col">{% trans %}result{% endtrans %}</th>
+                    <th scope="col">{% trans %}location{% endtrans %}</th>
+                    <th scope="col">{% trans %}started{% endtrans %}</th>
+                    <th scope="col">{% trans %}teams{% endtrans %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for game in games %}
+                        <tr>
+                            <th scope="row">{{ (game.result is null) ? 'Pending' : 'Ended' }}</th>
+                            <td>{{ game.goals|length }}</td>
+                            <td>{{ game.result }}</td>
+                            <td>{{ game.location }}</td>
+                            <td>{{ game.beginning|date("m/d/Y H:m") }}</td>
+                            <td>
+                                {% for team in game.teams %}
+                                    {{ team.name }}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 {% endblock %}

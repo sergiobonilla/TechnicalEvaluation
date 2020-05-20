@@ -3,3 +3,10 @@ formed_club_json: JSON for club
 formed_match_json: Json to update match
 update_match: Update match info
 send_data: Send data
+matches: Matches
+status: Status
+location: Location
+started: Started
+goals: Goals
+result: Result
+teams: Teams
