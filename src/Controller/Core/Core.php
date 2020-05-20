@@ -3,6 +3,9 @@
 namespace App\Controller\Core;
 
 use App\Entity\Game;
+use App\Entity\Goal;
+use App\Entity\Penalty;
+use App\Entity\Player;
 use App\Entity\Team;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,8 +21,16 @@ class Core extends AbstractController
 		$this->em = $em;
 	}
 
-	public function getGame (string $location, DateTime $date, array $teams) {
-		return $this->em->getRepository(Game::class)->findByExact($location, $date, $teams);
+	public function findGameStrict (string $location, $result, DateTime $date, array $teams) {
+		return $this->em->getRepository(Game::class)->findStrict($location, $result, $date, $teams);
+	}
+
+	public function findGame (string $location, DateTime $date) {
+		return $this->em->getRepository(Game::class)->findGame($location, $date);
+	}
+
+	public function findPlayer (Team $team, string $name) {
+		return $this->em->getRepository(Player::class)->findByTeamAndName($team, $name);
 	}
 
 	public function findTeamByName (string $name) {
@@ -40,6 +51,7 @@ class Core extends AbstractController
 
 	protected function processJsonGame ($json) : array
 	{
+		$players  = array();
 		$teams    = array();
 		$location = $json['location'];
 		$result   = (empty($json['result']) ? null : $json['result']);
@@ -63,12 +75,28 @@ class Core extends AbstractController
 			if (strlen($key) >= 100)
 				return array(false, "$key is too long", $location, $result, $date, $teams);
 
-			array_push($teams, $this->createOrGetTeam($key));
+			$team = $this->createOrGetTeam($key);
+			array_push($teams, $team);
+			$players[$team->getId()] = isset($value['players']) ? $value['players'] : array();
 		}
 
-		$game = $this->getGame($location, $date, $teams);
+		$gameStrict = $this->findGameStrict($location, $result, $date, $teams);
+		$game       = $this->findGame($location, $date);
 
-		if (empty($game)) {
+		if (!empty($gameStrict) || !empty($game)) {
+			$game->setResult($result);
+			$game->resetTeams();
+			$this->persist($game);
+
+			foreach ($teams as $team) {
+				$team->addGame($game);
+				$game->addTeam($team);
+				$this->persist($team);
+				$this->persist($game);
+
+				$this->setTeamPlayers($team, $game, $players[$team->getId()]);
+			}
+		} else {
 			// Let's create the game because it has been not found
 			$game = new Game();
 			$game->setLocation($location);
@@ -81,12 +109,61 @@ class Core extends AbstractController
 				$game->addTeam($team);
 				$this->persist($team);
 				$this->persist($game);
-			}
-		}
 
+				$this->setTeamPlayers($team, $game, $players[$team->getId()]);
+			}
+
+			return array(true, 'A new match has been created', $location, $result, $date, $teams);
+		}
 		return array(true, 'Json parsed and data registered', $location, $result, $date, $teams);
 	}
 
+	private function setTeamPlayers (Team $team, Game $game, array $players) {
+		$team->resetPlayers();
+
+		foreach ($players as $data) {
+			$name      = $data['name'];
+			$goals     = $data['goals'];
+			$penalties = $data['penalty'];
+
+			if (!$player = $this->findPlayer($team, $name)) {
+				$player = new Player();
+				$player->setName($name);
+				$player->setTeam($team);
+
+				$this->persist($player);
+				$this->persist($team);
+			}
+
+			foreach ($goals as $goalData) {
+				$moment = intval($goalData['moment']);
+
+				$goal = new Goal();
+				$goal->setMoment($moment);
+				$goal->setPlayer($player);
+				$goal->setGame($game);
+
+				$this->persist($goal);
+				$this->persist($player);
+				$this->persist($game);
+			}
+
+			foreach ($penalties as $penaltyData) {
+				$moment = intval($penaltyData['moment']);
+				$type   = intval($penaltyData['type']);
+
+				$penalty = new Penalty();
+				$penalty->setMoment($moment);
+				$penalty->setType($type);
+				$penalty->setPlayer($player);
+				$penalty->setGame($game);
+
+				$this->persist($penalty);
+				$this->persist($player);
+				$this->persist($game);
+			}
+		}
+	}
 
 	private function persist ($entity) {
 		$this->em->persist($entity);

@@ -21,8 +21,8 @@ class ServiceController extends Core
 			return new JsonResponse(array('message' => 'Empty data'), Response::HTTP_BAD_REQUEST);
 
 		if ($parsed = json_decode($data, true)) {
-			if (isset($parsed['club'])) {
-				foreach ($parsed['club'] as $game) {
+			if (isset($parsed['data'])) {
+				foreach ($parsed['data'] as $game) {
 					list($status, $message, $location, $result, $date, $teams) = $this->processJsonGame($game);
 
 					if (!$status)
