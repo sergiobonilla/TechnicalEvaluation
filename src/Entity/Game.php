@@ -46,6 +46,11 @@ class Game
 	private $goals;
 
 	/**
+	 * @ORM\OneToMany(targetEntity="Penalty", mappedBy="game", cascade={"remove"})
+	 */
+	private $penalties;
+
+	/**
 	 * @ORM\Column(type="datetime")
 	 */
 	private $created;
@@ -57,9 +62,10 @@ class Game
 
 	public function __construct ()
 	{
-		$this->created = new DateTime("now");
-		$this->teams   = new ArrayCollection();
-		$this->goals   = new ArrayCollection();
+		$this->created   = new DateTime("now");
+		$this->teams     = new ArrayCollection();
+		$this->goals     = new ArrayCollection();
+		$this->penalties = new ArrayCollection();
 	}
 
 	public function getId () : int
@@ -139,6 +145,16 @@ class Game
 	public function addGoal (Goal $goal)
 	{
 		$this->getGoals()->add($goal);
+	}
+
+	public function getPenalties ()
+	{
+		return $this->penalties;
+	}
+
+	public function addPenalty (Penalty $penalty)
+	{
+		$this->getPenalties()->add($penalty);
 	}
 
 	public function getCreated () : DateTime

@@ -77,6 +77,11 @@ class Team
 		$this->getPlayers()->add($player);
 	}
 
+	public function resetPlayers ()
+	{
+		$this->players = new ArrayCollection();
+	}
+
 	public function getGames ()
 	{
 		return $this->games;

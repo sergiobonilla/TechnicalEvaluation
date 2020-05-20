@@ -38,6 +38,12 @@ class Penalty
 	private $player;
 
 	/**
+	 * @ORM\ManyToOne(targetEntity="Game", inversedBy="penalties")
+	 * @ORM\JoinColumn(name="id_penalty", referencedColumnName="id", nullable=false)
+	 */
+	private $game;
+
+	/**
 	 * @ORM\Column(type="datetime")
 	 */
 	private $created;
@@ -87,6 +93,16 @@ class Penalty
 	public function setPlayer (Player $player)
 	{
 		$this->player = $player;
+	}
+
+	public function getGame () : Game
+	{
+		return $this->game;
+	}
+
+	public function setGame (Game $game)
+	{
+		$this->game = $game;
 	}
 
 	public function getCreated () : DateTime
