@@ -95,7 +95,7 @@ class Game
 		return $this;
 	}
 
-	public function getResult () : string
+	public function getResult ()
 	{
 		return $this->result;
 	}
