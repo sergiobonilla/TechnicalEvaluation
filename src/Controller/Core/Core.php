@@ -18,8 +18,8 @@ class Core extends AbstractController
 		$this->em = $em;
 	}
 
-	public function getGame (string $location, $result, DateTime $date, array $teams) {
-		return $this->em->getRepository(Game::class)->findByExact($location, $result, $date, $teams);
+	public function getGame (string $location, DateTime $date, array $teams) {
+		return $this->em->getRepository(Game::class)->findByExact($location, $date, $teams);
 	}
 
 	public function findTeamByName (string $name) {
@@ -76,6 +76,18 @@ class Core extends AbstractController
 		if (empty($game)) {
 			// Let's create the game because it has been not found
 			$game = new Game();
+			$game->setLocation($location);
+			$game->setBeginning($date);
+			$game->setResult($result);
+			$this->persist($game);
+
+			foreach ($teams as $team) {
+				$team->addGame($game);
+				$game->addTeam($team);
+				$this->persist($team);
+				$this->persist($game);
+			}
+		} else {
 			$game->setLocation($location);
 			$game->setBeginning($date);
 			$game->setResult($result);

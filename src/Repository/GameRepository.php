@@ -15,25 +15,17 @@ class GameRepository extends ServiceEntityRepository
 		parent::__construct($registry, Game::class);
 	}
 
-	public function findByExact (string $location, $result, DateTime $date, array $teams)
+	public function findByExact (string $location, DateTime $date, array $teams)
 	{
 		if (count($teams) != 2)
 			return null;
 
 		try {
-			$query = $this->createQueryBuilder('g')
+			return $this->createQueryBuilder('g')
 				->join('g.teams', 'teams')
 				->where('g.beginning = :beginning')
-				->andWhere('g.location = :location');
-
-			if (empty($result))
-				$query->andWhere('g.result IS NULL');
-			else {
-				$query->andWhere('g.result = :result')
-					->setParameter('result', $result);
-			}
-
-			return $query->andWhere('teams.name = :name1 OR teams.name = :name2 OR teams.name = :name2 OR teams.name = :name1')
+				->andWhere('g.location = :location')
+				->andWhere('teams.name = :name1 OR teams.name = :name2 OR teams.name = :name2 OR teams.name = :name1')
 				->setParameter('beginning', $date)
 				->setParameter('location', $location)
 				->setParameter('name1', $teams[0]->getName())
