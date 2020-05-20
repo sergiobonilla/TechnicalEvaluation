@@ -15,7 +15,10 @@ class ServiceController extends Core
 		 * TODO for better performance of the function here should be implemented a token authentication for the
 		 * request, but for dev purpose I will not do
 		 */
-		$data = '';
+		$data = $request->request->get('data', '');
+
+		if (empty($data))
+			return new JsonResponse(array('message' => 'Empty data'), Response::HTTP_BAD_REQUEST);
 
 		if ($parsed = json_decode($data, true)) {
 			if (isset($parsed['club'])) {

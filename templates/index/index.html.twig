@@ -9,16 +9,23 @@
 {% block body %}
     <div class="container">
         <div class="row">
+            <div id="success" class="alert alert-success col-12 mt-3" style="display: none;">
+                <strong>Success!</strong> <span></span>
+            </div>
+            <div id="danger" class="alert alert-danger col-12 mt-3" style="display: none;">
+                <strong>Danger!</strong> <span></span>
+            </div>
+
             <div class="col-12 mt-5">
                 <button type="button" id="toggleForm" class="btn btn-info">{% trans %}add_test_data{% endtrans %}</button>
             </div>
             <div id="addData" class="col-12 mt-3">
                 <form>
                     <div class="form-group">
-                        <label for="json">{% trans %}formed_json{% endtrans %}</label>
-                        <textarea class="form-control" id="json" rows="3"></textarea>
+                        <label for="json">{% trans %}formed_club_json{% endtrans %}</label>
+                        <textarea class="form-control" id="json" rows="3">{"club": {"0": {"location": "Santiago Bernabeu", "date": "2020-3-10T18:30:55", "result": "", "teams":{"Real Madrid": {}, "Barcelona": {}}}, "1": {"location": "Sanchez Pijuán", "date": "2019-3-13T18:30:55", "result": "2|2", "teams":{"Sevilla": {}, "Betis": {}}}}}</textarea>
                     </div>
-                    <button type="button" class="btn btn-primary mb-2">{% trans %}send_data{% endtrans %}</button>
+                    <button id="sendData" type="button" class="btn btn-primary mb-2">{% trans %}send_data{% endtrans %}</button>
                 </form>
             </div>
             <div id="loadingFrame" class="col-12 d-none justify-content-center">
