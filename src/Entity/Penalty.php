@@ -39,7 +39,7 @@ class Penalty
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="Game", inversedBy="penalties")
-	 * @ORM\JoinColumn(name="id_penalty", referencedColumnName="id", nullable=false)
+	 * @ORM\JoinColumn(name="id_game", referencedColumnName="id", nullable=false)
 	 */
 	private $game;
 
