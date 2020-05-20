@@ -3,6 +3,11 @@ $( document ).ready(function() {
         $('#toggleForm').click( function () {
             $('#addData').slideToggle( "slow");
         });
+
+        $('#toggleFormMatch').click( function () {
+            $('#addDataMatch').slideToggle( "slow");
+        });
+
     }
     function pushData () {
         $('#sendData').click( function () {
