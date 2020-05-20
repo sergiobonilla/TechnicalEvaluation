@@ -110,6 +110,27 @@ class Game
 		$this->getTeams()->add($team);
 	}
 
+	public function hasTeam (Team $teamSearch) : bool
+	{
+		foreach ($this->getTeams() as $team) {
+			if ($teamSearch->getId() === $team->getId())
+				return true;
+		}
+
+		return false;
+	}
+
+	public function removeTeam (Team $team)
+	{
+		if ($this->hasTeam($team))
+			$this->getTeams()->removeElement($team);
+	}
+
+	public function resetTeams ()
+	{
+		$this->teams = new ArrayCollection();
+	}
+
 	public function getGoals ()
 	{
 		return $this->goals;
